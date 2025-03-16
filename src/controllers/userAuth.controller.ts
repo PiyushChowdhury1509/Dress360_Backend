@@ -77,7 +77,7 @@ export const UserSignin = async (req:Request, res: Response) => {
             return;
         }
 
-        const isPasswordCorrect = comparePassword(refinedBody.password, user.password);
+        const isPasswordCorrect: boolean = await comparePassword(refinedBody.password, user.password);
         if(!isPasswordCorrect){
             res.status(400).json({
                 success: false,
