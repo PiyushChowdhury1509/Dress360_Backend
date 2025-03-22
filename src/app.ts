@@ -16,7 +16,7 @@ app.use(compression());
 
 import userRouter from './routes/user.routes';
 
-app.use('/user',userRouter);
+app.use('/api/v1/user',userRouter);
 
 app.use('/', (err: Error, req: Request,res: Response,next: NextFunction) => {
     console.log(err);

@@ -109,3 +109,22 @@ export const UserSignin = async (req:Request, res: Response) => {
         return;
     }
 }
+
+export const UserLogout = (req: Request,res: Response) => {
+    try{
+        res.clearCookie('token');
+        res.status(200).json({
+            success: true,
+            message: "logout successfull"
+        })
+        return;
+    } catch(error){
+        const err = error as Error;
+        res.status(500).json({
+            success: false,
+            message: "internal server error",
+            error: err.message
+        })
+        return;
+    }
+}
