@@ -4,7 +4,12 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 interface User extends Document{
     name: string,
     email: string,
-    password: string
+    password: string,
+    isVerified: boolean,
+    verifyOtp: string,
+    verifyOtpExpireAt: Date
+    resetOtp: string,
+    resetOtpExpireAt: Date
 }
 
 const userSchema = new mongoose.Schema<User>({
@@ -25,6 +30,27 @@ const userSchema = new mongoose.Schema<User>({
         type: String,
         required: true,
         minLength: 6
+    },
+    isVerified: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    verifyOtp: {
+        type: String,
+        default: ''
+    },
+    verifyOtpExpireAt: {
+        type: Date,
+        default: 0
+    },
+    resetOtp: {
+        type: String,
+        default: ''
+    },
+    resetOtpExpireAt: {
+        type: Date,
+        default: 0
     }
 }, { timestamps: true });
 
