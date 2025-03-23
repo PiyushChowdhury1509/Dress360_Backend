@@ -3,6 +3,7 @@ import { userSchema, userType, userTypeWithId } from "../schemas/userSchema";
 import { User } from "../models/user";
 import { comparePassword, hashPassword } from "../utils/password";
 import { z } from "zod";
+import transporter from "../config/nodemailer";
 
 export const UserSignup = async (req: Request,res: Response) => {
     try{
@@ -30,6 +31,15 @@ export const UserSignup = async (req: Request,res: Response) => {
 
         const token = savedUser.getJwt();
         res.cookie('token',token);
+
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: newUser.email,
+            subject: "Welcome to Dress360",
+            text: `Hello ${newUser.name}, welcome to the Dress360 family`
+        }
+
+        await transporter.sendMail(mailOptions);
         
         res.status(201).json({
             success: true,
