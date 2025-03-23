@@ -138,3 +138,36 @@ export const UserLogout = (req: Request,res: Response) => {
         return;
     }
 }
+
+export const SendVerifyOtp = async (req: Request, res: Response) => {
+    try{
+        const user = (req as any).user;
+
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        user.verifyOtp = String(otp);
+        user.verifyOtpExpireAt = new Date(Date.now() + 24*60*60*1000);
+        await user.save();
+
+        const mailOptions={
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: "Verification OTP",
+            text: `hello ${user.name}, your verification otp is ${otp}`
+        };
+        await transporter.sendMail(mailOptions);
+
+        res.status(200).json({
+            success: true,
+            message: "OTP sent successfully"
+        })
+        return;
+    } catch(err){
+        console.log(err);
+        res.status(500).json({
+            success: false,
+            message: "Failed to send otp",
+            error: err
+        })
+        return;
+    }
+};
