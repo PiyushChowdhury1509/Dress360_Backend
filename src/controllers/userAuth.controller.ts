@@ -30,7 +30,7 @@ export const UserSignup = async (req: Request,res: Response) => {
         const savedUser: userTypeWithId = await newUser.save();
 
         const token = savedUser.getJwt();
-        res.cookie('token',token);
+        await res.cookie('token',token);
 
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
@@ -142,6 +142,7 @@ export const UserLogout = (req: Request,res: Response) => {
 export const SendVerifyOtp = async (req: Request, res: Response) => {
     try{
         const user = (req as any).user;
+        console.log(user);
 
         const otp = Math.floor(100000 + Math.random() * 900000);
         user.verifyOtp = String(otp);
