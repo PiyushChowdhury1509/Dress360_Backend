@@ -1,10 +1,15 @@
-import mongoose, { Document } from "mongoose";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import mongoose, { Document, Types } from "mongoose";
+import jwt from "jsonwebtoken";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 interface User extends Document{
     name: string,
     email: string,
     password: string,
+    address: string,
+    phone: string,
+    role: string,
+    orders: Types.ObjectId[],
     isVerified: boolean,
     verifyOtp: string,
     verifyOtpExpireAt: Date
@@ -36,13 +41,32 @@ const userSchema = new mongoose.Schema<User>({
         required: true,
         default: false
     },
+    phone: {
+        type: String,
+        required: true,
+        validate: {
+            validator: function (number: string) {
+                return isValidPhoneNumber(number);
+            },
+            message: "Invalid phone number",
+        },
+    },
+    role: {
+        type: String,
+        enum: ["customer","admin"],
+        default: "customer",
+    },
+    orders: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Order"
+    }],
     verifyOtp: {
         type: String,
         default: ''
     },
     verifyOtpExpireAt: {
         type: Date,
-        default: 0
+        default: null
     },
     resetOtp: {
         type: String,
@@ -50,13 +74,13 @@ const userSchema = new mongoose.Schema<User>({
     },
     resetOtpExpireAt: {
         type: Date,
-        default: 0
+        default: null
     }
 }, { timestamps: true });
 
 userSchema.methods.getJwt = function(){
-    const thisuser = this;
-    const token = jwt.sign({ _id: thisuser._id as JwtPayload}, process.env.JWT_SECRET!,{
+    const user = this;
+    const token = jwt.sign({_id: user._id.toString()}, process.env.JWT_SECRET!,{
         expiresIn: '7d'
     });
     return token;
