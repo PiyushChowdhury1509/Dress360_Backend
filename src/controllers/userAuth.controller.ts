@@ -30,7 +30,7 @@ export const UserSignup = async (req: Request,res: Response) => {
         const savedUser: userTypeWithId = await newUser.save();
 
         const token = savedUser.getJwt();
-        await res.cookie('token',token);
+        res.cookie('token',token);
 
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
