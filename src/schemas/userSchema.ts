@@ -2,44 +2,51 @@ import { Types } from "mongoose";
 import { z } from "zod";
 
 export const userSchema = z.object({
-    name: z
+  name: z
     .string()
     .trim()
-    .min(1,"name can't be empty")
-    .max(255,"name is too long"),
+    .min(1, "name can't be empty")
+    .max(255, "name is too long"),
 
-    email: z
+  email: z
     .string()
     .email("invalid email id")
     .toLowerCase()
     .trim(),
 
-    password: z
+  password: z
     .string()
-    .min(6,"password must be atleast 6 characters long"),
+    .min(6, "password must be at least 6 characters long"),
 
-    isVerified: z
+  isVerified: z
     .boolean()
     .default(false),
 
-    verifyOtp: z
+  verifyOtp: z
     .string()
     .optional()
-    .default(''),
+    .default(""),
 
-    verifyOtpExpireAt: z
-    .union([z.date(),z.number()])
+  verifyOtpExpireAt: z
+    .union([z.date(), z.number()])
     .default(0),
 
-    resetOtp: z
+  resetOtp: z
     .string()
     .optional()
-    .default(''),
+    .default(""),
 
-    resetOtpExpireAt: z
-    .union([z.date(),z.number()])
-    .default(0)
-})
+  resetOtpExpireAt: z
+    .union([z.date(), z.number()])
+    .default(0),
+});
 
 export type userType = z.infer<typeof userSchema>;
-export type userTypeWithId = userType & { _id: Types.ObjectId, getJwt():string, createdAt: Date, updatedAt: Date};
+
+export type userTypeWithId = userType & {
+  _id: Types.ObjectId;
+  getJwt(): string;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
