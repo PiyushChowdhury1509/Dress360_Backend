@@ -18,8 +18,10 @@ app.use(cookieParser());
 app.use(compression());
 
 import userRouter from './routes/user.routes';
+import productRouter from './routes/product.routes';
 
 app.use('/api/v1/user',userRouter);
+app.use('/api/v1/product',productRouter);
 
 app.use('/', (err: Error, req: Request,res: Response,next: NextFunction) => {
     console.log(err);
